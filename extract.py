@@ -3,25 +3,29 @@
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys
 
-jobs = pd.read_csv('jobs.csv')
+jobs = pd.read_csv(sys.argv[1])
 number_of_jobs = len(jobs)
 print(f"Processing {number_of_jobs} entries...")
 counts = dict()
-blacklist = ["SIEM", "NIST", "HMRC", "GDPR", "FTSE", "MHCLG", "CSOC", "STEM", "CISO", "EUSS", "ISMS", "DBSC", "ASOS", "NCSC", "DORA", "STRAP", "CREST", "KINTO", "UBDS", "GIAC", "KPMG", "CHECK", "IDEAL", "WILL", "FULL", "COST", "CEMA", "SAST", "DAST", "SANS", "FREE", "MITRE", "OWASP", "CSPM", "EMSOU", "CSIRT", "DFIR", "MSSP", "DHCP", "JCKP", "IASME", "ITIL", "ITSM", "CE+", "CODE", "PHIA", "CERT", "REST", "SOAP", "LGBTQ", "TPRM", "SOAR", "CFGI", "OSINT", "RAND", "GCSE", "TPDD", "EMEA", "ASDA", "APPLY", "NATO"]
+blacklist = ["SIEM", "NIST", "HMRC", "GDPR", "FTSE", "MHCLG", "CSOC", "STEM", "CISO", "EUSS", "ISMS", "DBSC", "ASOS", "NCSC", "DORA", "STRAP", "CREST", "KINTO", "UBDS", "GIAC", "KPMG", "CHECK", "IDEAL", "WILL", "FULL", "COST", "CEMA", "SAST", "DAST", "SANS", "FREE", "MITRE", "OWASP", "CSPM", "EMSOU", "CSIRT", "DFIR", "MSSP", "DHCP", "JCKP", "IASME", "ITIL", "ITSM", "CE+", "CODE", "PHIA", "CERT", "REST", "SOAP", "LGBTQ", "TPRM", "SOAR", "CFGI", "OSINT", "RAND", "GCSE", "TPDD", "EMEA", "ASDA", "APPLY", "NATO", "FMLA", "USAF", "MADSS", "HIPAA", "EPPA", "AFMAN", "AFIN", "STEP", "HBSS", "DISA", "STIG", "CSSP", "MACCE", "HTTP", "NOTE", "ACAS", "CMMC", "NERC", "MUST", "USMC", "RKON", "SPAC", "SMADS", "CJIS", "MAJOR", "CCPA", "CIAM", "CNSSI", "PGTEK", "FISMA", "MTAC", "WITH", "DFAS", "AFSIM", "LEVEL", "SAML", "COBIT", "ISACA", "SCADA", "HIDS", "EQUAL", "JANUS", "JWICS", "ISSO", "IAVM", "DFARS", "NIPR", "FAIR", "TVFCU", "SCAP", "SDLC", "KAIT", "BAIT", "ESMA", "ITAR", "SAIC", "ISSM"]
 
 def add_count(to_add, dictionary):
    dictionary[to_add] = dictionary.get(to_add, 0) + 1
 
 def extract_and_count(row):
     
-    to_match = r"\b[A-Z]{4,5}\b|\b[A-Za-z]+?\+|CEH"
+    to_match = r"\b[A-Z]{4,5}\b|\b[A-Za-z]+?\+|CEH|\b[A-Z]{2}\b-\b[0-9]{3}\b|CCE|CAP|EnCE|CFR|GSE|CRT"
     found = re.findall(to_match, str(row["text"]))
 
     for i in found:
         add_count(i, counts)
 
 jobs.apply(extract_and_count, axis = 1)
+if 'Sec+' in counts:
+    counts['Security+'] += counts['Sec+']
+    counts.pop('Sec+', None)
 
 for i in blacklist:
     counts.pop(i, None)

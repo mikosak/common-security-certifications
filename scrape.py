@@ -6,12 +6,14 @@ from bs4 import BeautifulSoup
 import math
 import pandas as pd
 
-target='https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=cyber&location=United%20Kingdom&geoId=101165590&start={}'
+# enter your search parameters here
+target='https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=cyber&location=United%20States&geoId=103644278&start={}'
 o = {}
 k = []
 l = []
 
-for i in range(0,math.ceil(4000/25)):
+# change ceil(???/25) to the number of job listings
+for i in range(0,math.ceil(8000/25)):
     res = requests.get(target.format(i))
     soup = BeautifulSoup(res.text,'html.parser')
     jobs_on_page = soup.find_all("li")
