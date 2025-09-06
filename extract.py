@@ -23,6 +23,8 @@ def extract_and_count(row):
         add_count(i, counts)
 
 jobs.apply(extract_and_count, axis = 1)
+
+# a lot of posters use Sec+ instead of the actual name
 if 'Sec+' in counts:
     counts['Security+'] += counts['Sec+']
     counts.pop('Sec+', None)
@@ -31,9 +33,9 @@ for i in blacklist:
     counts.pop(i, None)
 
 to_clean = []
-#for key, val in counts.items():
-#    if val < number_of_jobs / 100:
-#        to_clean.append(key)
+for key, val in counts.items():
+    if val < number_of_jobs / 100:
+        to_clean.append(key)
 
 for i in to_clean:
     counts.pop(i, None)
