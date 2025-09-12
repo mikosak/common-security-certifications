@@ -49,4 +49,7 @@ print(counts)
 
 plt.bar(range(10), list(counts.values())[:10], align="center")
 plt.xticks(range(10), list(counts.keys())[:10])
+
+# make sure to change the title :)
+plt.title("Top 10 Cybersecurity Certifications in ???")
 plt.show()
